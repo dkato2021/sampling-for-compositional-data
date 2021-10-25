@@ -35,11 +35,11 @@ class My_sampling(object):
         return self.dfP
     
     def get_X(self, dist = None): #単体空間への写像
-        if dist == 0:
+        if dist == 0: #一様乱数
             W = self.get_W()
-        elif dist == 1:
+        elif dist == 1: #正規分布
             W = self.get_N()  
-        elif dist == 2:
+        elif dist == 2: #ポアソ分布
             W = self.get_P()  
         _df = pd.DataFrame()
         for i in range(self.num_sample):
@@ -48,15 +48,15 @@ class My_sampling(object):
         _df.index = range(self.num_sample) ;_df.columns = [f"x{i}" for i in range(self.num_col)]
         return _df
     
-def plot(df, x = None, y = None):
-    fig, ax = plt.subplots(figsize=(5, 5))
-    sns.scatterplot(data=df, x=df.columns[x], y=df.columns[y]) ;plt.show()
+def plot(df):
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(15,5))
+    sns.scatterplot(data=df, x=df.columns[0], y = df.columns[1], ax = ax1)
+    sns.scatterplot(data=df, x=df.columns[0], y = df.columns[2], ax = ax2)
+    sns.scatterplot(data=df, x=df.columns[1], y = df.columns[2], ax = ax3);plt.show()
     
 if __name__ == "__main__":
     instance = My_sampling(num_col = 3, num_sample = 300)
-    W, N = instance.get_W(), instance.get_N()
-    X = instance.get_X(norm = True)
-
-    plot(P, x =0, y = 1)
-    plot(P, x =1, y = 2)
-    plot(P, x =0, y = 2)
+    W, N, P = instance.get_W(), instance.get_N(), instance.get_P()
+    X = instance.get_X(dist = 1)
+    
+    plot(N) ;plot(X)
