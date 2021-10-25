@@ -42,3 +42,12 @@ class My_sampling(object):
 def plot(df, x = None, y = None):
     fig, ax = plt.subplots(figsize=(5, 5))
     sns.scatterplot(data=df, x=df.columns[x], y=df.columns[y]) ;plt.show()
+    
+if __name__ == "__main__":
+    instance = My_sampling(num_col = 3, num_sample = 300)
+    W, N = instance.get_W(), instance.get_N()
+    X = instance.get_X(norm = True)
+
+    plot(N, x =0, y = 2)
+    plot(N, x =1, y = 2)
+    plot(N, x =0, y = 2)
