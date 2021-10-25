@@ -14,6 +14,7 @@ class My_sampling(object):
         self.num_sample = num_sample
         self.dfW = pd.DataFrame()
         self.dfN = pd.DataFrame()
+        self.dfP = pd.DataFrame()
         
     def get_W(self): #実空間からランダムサンプリング
         for i in range(self.num_col):
@@ -27,11 +28,19 @@ class My_sampling(object):
             self.dfN = pd.concat([self.dfN, tmp], axis = 1)
         return self.dfN
     
-    def get_X(self, norm = None): #単体空間への写像
-        if norm:
-            W = self.get_N()
-        else:
-            W = self.get_W()  
+    def get_P(self): #実空間からポアソン分布に従ったサンプリング
+        for i in range(self.num_col):
+            fix_seed(i) ;tmp = pd.DataFrame([np.random.poisson(lam=50) for j in range(self.num_sample)], columns =[f"p{i}"])
+            self.dfP = pd.concat([self.dfP, tmp], axis = 1)
+        return self.dfP
+    
+    def get_X(self, dist = None): #単体空間への写像
+        if dist == 0:
+            W = self.get_W()
+        elif dist == 1:
+            W = self.get_N()  
+        elif dist == 2:
+            W = self.get_P()  
         _df = pd.DataFrame()
         for i in range(self.num_sample):
             tmp = [W.iloc[i,j]/sum(W.loc[i,:]) for j in range(self.num_col)]
@@ -48,6 +57,6 @@ if __name__ == "__main__":
     W, N = instance.get_W(), instance.get_N()
     X = instance.get_X(norm = True)
 
-    plot(N, x =0, y = 2)
-    plot(N, x =1, y = 2)
-    plot(N, x =0, y = 2)
+    plot(P, x =0, y = 1)
+    plot(P, x =1, y = 2)
+    plot(P, x =0, y = 2)
